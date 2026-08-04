@@ -1,14 +1,14 @@
-use intentdiff_plugin_sdk::tree::{SemanticNode, SemanticNodeBuilder};
+use intentumdiff_plugin_sdk::tree::{SemanticNode, SemanticNodeBuilder};
 
 wit_bindgen::generate!({
     path: "wit/plugin.wit",
     world: "parser-plugin",
 });
 
-use crate::exports::intentdiff::plugin::parser::ExamplePair;
-use crate::exports::intentdiff::plugin::parser::Guest;
-use crate::exports::intentdiff::plugin::parser::LanguageInfoRecord;
-use crate::exports::intentdiff::plugin::parser::ParserMode;
+use crate::exports::intentumdiff::plugin::parser::ExamplePair;
+use crate::exports::intentumdiff::plugin::parser::Guest;
+use crate::exports::intentumdiff::plugin::parser::LanguageInfoRecord;
+use crate::exports::intentumdiff::plugin::parser::ParserMode;
 
 const LANGUAGE_ID: &str = "asciidoc";
 const ROOT_NODE_TYPE: &str = "asciidoc_document";
@@ -29,7 +29,7 @@ struct BlockFrame {
 struct AsciidocParser;
 
 fn language_info_for(ids: Vec<String>) -> Vec<LanguageInfoRecord> {
-    let metadata = intentdiff_plugin_sdk::metadata::parse_plugin_metadata(PLUGIN_METADATA);
+    let metadata = intentumdiff_plugin_sdk::metadata::parse_plugin_metadata(PLUGIN_METADATA);
     ids.into_iter()
         .map(|language_id| {
             let info = metadata.language_or_default(&language_id);
@@ -455,15 +455,15 @@ mod tests {
     #[test]
     fn process_returns_valid_json() {
         let parsed = parse_asciidoc(DEFAULT_NEW);
-        intentdiff_plugin_sdk::testing::assert_valid_json(&parsed, LANGUAGE_ID);
-        intentdiff_plugin_sdk::testing::assert_root_node_type(&parsed, ROOT_NODE_TYPE, LANGUAGE_ID);
+        intentumdiff_plugin_sdk::testing::assert_valid_json(&parsed, LANGUAGE_ID);
+        intentumdiff_plugin_sdk::testing::assert_root_node_type(&parsed, ROOT_NODE_TYPE, LANGUAGE_ID);
     }
 
     #[test]
     fn process_extracts_sections_attributes_blocks_links_and_xrefs() {
         let parsed = parse_asciidoc(
             r#"
-= IntentDiff
+= IntentumDiff
 :revnumber: 1.0
 [[install]]
 == Install
@@ -472,7 +472,7 @@ NOTE: See link:https://example.com/docs[docs] and xref:#usage[Usage].
 * Run setup
 image::screens/review.png[]
 ----
-intentdiff git main
+intentumdiff git main
 ----
 "#,
         );
@@ -499,7 +499,7 @@ intentdiff git main
         labels_by_type(&root, "link", &mut links);
         labels_by_type(&root, "xref", &mut xrefs);
 
-        assert!(sections.contains(&"IntentDiff".to_string()));
+        assert!(sections.contains(&"IntentumDiff".to_string()));
         assert!(sections.contains(&"Install".to_string()));
         assert!(attributes.contains(&"revnumber: 1.0".to_string()));
         assert!(anchors.contains(&"install".to_string()));
